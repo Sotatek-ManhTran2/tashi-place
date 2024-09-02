@@ -1,3 +1,5 @@
+import "./global.css";
+
 export default function RootLayout({
   children,
 }: {
@@ -5,6 +7,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <title>Tashi Place</title>
+      </head>
       <body>{children}</body>
     </html>
   );
