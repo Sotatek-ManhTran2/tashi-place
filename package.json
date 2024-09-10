@@ -18,6 +18,7 @@
   "dependencies": {
     "mqtt": "^5.10.1",
     "pixi-viewport": "^5.0.3",
-    "pixi.js": "^8.3.4"
+    "pixi.js": "^8.3.4",
+    "tick-knock": "^4.3.0"
   }
 }
