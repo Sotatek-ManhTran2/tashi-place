@@ -5,32 +5,19 @@
   "scripts": {
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite dev",
+    "build": "vite build",
+    "lint": "oxlint --promise-plugin --import-plugin --tsconfig=./tsconfig.json -D suspicious"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/react": "18.3.4",
-    "autoprefixer": "^10.4.20",
-    "eslint": "8.57.0",
-    "eslint-config-next": "14.2.6",
-    "postcss": "^8.4.44",
-    "prettier": "^3.3.3",
-    "tailwindcss": "^3.4.10"
-  },
-  "peerDependencies": {
+    "oxlint": "^0.9.3",
+    "vite": "^5.4.3",
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@uidotdev/usehooks": "^2.4.1",
-    "canvas": "^2.11.2",
-    "konva": "^9.3.14",
     "mqtt": "^5.10.1",
-    "next": "^14.2.6",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-konva": "^18.2.10"
+    "pixi-viewport": "^5.0.3",
+    "pixi.js": "^8.3.4"
   }
 }
