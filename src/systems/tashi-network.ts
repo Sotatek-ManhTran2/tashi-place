@@ -5,14 +5,6 @@ import { Position } from "../components/position.ts";
 import { Color } from "../components/color.ts";
 import * as uuid from "uuid";
 
-// const foxMqEndpoints = [
-//   [
-//     import.meta.env.VITE_FOXMQ_HOSTNAME_1,
-//     import.meta.env.VITE_FOXMQ_USERNAME_1,
-//     import.meta.env.VITE_FOXMQ_PASSWORD_1,
-//   ],
-// ];
-
 type TashiNetworkEvent =
   | {
       event: "dot";
@@ -47,7 +39,7 @@ export class TashiNetworkSystem extends IterativeSystem {
     });
 
     // discover endpoints from .env
-    for (let i = 1; ; i++) {
+    for (let i = 0; ; i++) {
       const hostname = import.meta.env[`${envPrefix}HOSTNAME_${i}`];
       const username = import.meta.env[`${envPrefix}USERNAME_${i}`];
       const password = import.meta.env[`${envPrefix}PASSWORD_${i}`];
@@ -63,7 +55,7 @@ export class TashiNetworkSystem extends IterativeSystem {
 
     // randomly pick an endpoint
     const endpointIndex = Math.floor(
-      Math.random() * (this.availableEndpoints.length - 1),
+      Math.random() * (this.availableEndpoints.length),
     );
 
     const endpoint = this.availableEndpoints[endpointIndex];
