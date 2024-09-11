@@ -11,14 +11,14 @@ export class GridLines extends Graphics {
 
     this.setStrokeStyle({ color: options.strokeColor, width: 1 });
 
-    for (let x = 0; x < options.worldWidth / options.dotSize; x++) {
+    for (let x = 0; x <= options.worldWidth / options.dotSize; x++) {
       this.moveTo(x * options.dotSize, 0);
       this.lineTo(x * options.dotSize, options.worldHeight);
     }
 
     this.stroke();
 
-    for (let y = 0; y < options.worldHeight / options.dotSize; y++) {
+    for (let y = 0; y <= options.worldHeight / options.dotSize; y++) {
       this.moveTo(0, y * options.dotSize);
       this.lineTo(options.worldWidth, y * options.dotSize);
     }
