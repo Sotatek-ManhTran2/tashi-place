@@ -3,6 +3,7 @@ import mqtt from "mqtt";
 import { createDot, DOT, FINALIZED } from "../entities/dot.ts";
 import { Position } from "../components/position.ts";
 import { Color } from "../components/color.ts";
+import * as uuid from "uuid";
 
 // const foxMqEndpoints = [
 //   [
@@ -12,20 +13,32 @@ import { Color } from "../components/color.ts";
 //   ],
 // ];
 
-type TashiNetworkEvent = {
-  event: "dot";
-  dot: {
-    x: number;
-    y: number;
-    color: number;
-  };
-};
+type TashiNetworkEvent =
+  | {
+      event: "dot";
+      dot: {
+        x: number;
+        y: number;
+        color: number;
+      };
+    }
+  | {
+      event: "welcome";
+      clientId: string;
+    }
+  | {
+      event: "world";
+      clientId: string;
+      dots: { x: number; y: number; color: number }[];
+    };
 
 const envPrefix = "VITE_FOXMQ_";
 
 export class TashiNetworkSystem extends IterativeSystem {
   private readonly availableEndpoints: mqtt.IClientOptions[] = [];
   private clientPromise: Promise<mqtt.MqttClient>;
+  private welcomed = false;
+  private readonly clientId = uuid.v4();
 
   constructor() {
     super((entity) => {
@@ -64,7 +77,13 @@ export class TashiNetworkSystem extends IterativeSystem {
     this.clientPromise = (async () => {
       const client = await mqtt.connectAsync(endpoint);
       await client.subscribeAsync("place");
-      client.on("message", this.onMessage.bind(this));
+      client.on("message", this.onMessage.bind(this, client));
+
+      // publish a welcome message
+      client.publish(
+        "place",
+        JSON.stringify({ event: "welcome", clientId: this.clientId }),
+      );
 
       return client;
     })();
@@ -101,11 +120,55 @@ export class TashiNetworkSystem extends IterativeSystem {
     // no action needed
   };
 
-  private onMessage(topic: string, message: Buffer) {
+  private onMessage(client: mqtt.MqttClient, topic: string, message: Buffer) {
     if (topic === "place") {
       const payload = JSON.parse(message.toString("utf8")) as TashiNetworkEvent;
 
       switch (payload.event) {
+        case "welcome": {
+          if (this.clientId === payload.clientId) return;
+
+          // hey there is a new client
+          // send our world
+          const world = this.engine.entities
+            .filter((entity) => entity.hasAll(FINALIZED, DOT, Color, Position))
+            .map((entity) => {
+              const { x, y } = entity.get(Position)!;
+              const { color } = entity.get(Color)!;
+
+              return { x, y, color };
+            });
+
+          console.log("send", world.length);
+
+          client.publish(
+            "place",
+            JSON.stringify({
+              event: "world",
+              dots: world,
+              clientId: this.clientId,
+            } satisfies TashiNetworkEvent),
+          );
+
+          break;
+        }
+
+        case "world": {
+          if (this.clientId === payload.clientId) return;
+          if (this.welcomed) return;
+          this.welcomed = true;
+          console.log("world!");
+
+          for (const dot of payload.dots) {
+            createDot(this.engine, {
+              ...dot,
+              finalized: true,
+            });
+          }
+
+          break;
+        }
+
         case "dot": {
           // add a new dot
           createDot(this.engine, {
