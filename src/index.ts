@@ -15,8 +15,8 @@ import { TashiNetworkSystem } from "./systems/tashi-network.ts";
 const DOT_SIZE = 10;
 
 // number of dots in the world across both axis
-const DOTS_X = 100;
-const DOTS_Y = 100;
+const DOTS_X = 1000;
+const DOTS_Y = 1000;
 
 // size of the world
 const WORLD_WIDTH = DOT_SIZE * DOTS_X;
