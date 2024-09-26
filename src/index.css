@@ -1,0 +1,31 @@
+/* Reset */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Palette */
+
+:root {
+  --color-background: #F5F5F5;
+}
+
+/* Base */
+
+body, #app {
+  min-height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--color-background);
+}
